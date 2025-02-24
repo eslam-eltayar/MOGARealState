@@ -14,6 +14,8 @@ namespace MOGARealState.Repositories._Data
     {
         public DbSet<Property> Properties { get; set; }
         public DbSet<Agent> Agents { get; set; }
+        public DbSet<FavoriteUserProperties> FavoriteUserProperties { get; set; }
+        public DbSet<UserOrders> UserOrders { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

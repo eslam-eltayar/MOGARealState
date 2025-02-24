@@ -16,12 +16,18 @@ namespace MOGARealState.APIs.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly ITokenService _tokenService;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly IAgentService _agentService;
 
-        public AuthController(UserManager<AppUser> userManager, ITokenService tokenService, SignInManager<AppUser> signInManager)
+        public AuthController(
+            UserManager<AppUser> userManager, 
+            ITokenService tokenService, 
+            SignInManager<AppUser> signInManager,
+            IAgentService agentService)
         {
             _userManager = userManager;
             _tokenService = tokenService;
             _signInManager = signInManager;
+            _agentService = agentService;
         }
 
 
@@ -83,13 +89,21 @@ namespace MOGARealState.APIs.Controllers
 
             var role = roles.FirstOrDefault();
 
+            int? agentId = null;
+
+            if (role == "Agent")
+            {
+                agentId = await _agentService.GetAgentIdByEmailAsync(user.Email!);
+            }
+
             return Ok(new UserDto()
             {
                 UserId = user.Id,
                 UserName = user.UserName!,
                 Email = user.Email!,
                 Token = await _tokenService.CreateTokenAsync(user, _userManager),
-                Role = role ?? ""
+                Role = role ?? "",
+                AgentId = agentId
             });
         }
     }

@@ -20,7 +20,7 @@ namespace MOGARealState.APIs.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Message = ex.Message });
             }
         }
 
@@ -35,7 +35,39 @@ namespace MOGARealState.APIs.Controllers
             }
             catch (Exception ex)
             {
-                return NotFound(ex.Message);
+                return NotFound(new { Message = ex.Message });
+            }
+        }
+
+        [HttpGet("Orders/{agentId}")]
+        public async Task<ActionResult<IReadOnlyList<UserOrderResponse>>> GetOrders(int agentId, CancellationToken cancellationToken)
+        {
+            try
+            {
+
+                var result = await _agentService.GetOrdersAsync(agentId, cancellationToken);
+
+                return Ok(result);
+
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new { Message = ex.Message });
+            }
+        }
+
+        [HttpPost("ChangeOrderStatus/{orderId}")]
+        public async Task<IActionResult> ChangeOrderStatus(int orderId, [FromBody] ChangeOrderStatusRequest request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var result = await _agentService.ChangeOrderStatusAsync(orderId, request.NewStatus, cancellationToken);
+
+                return Ok(new { Message = "Order Status Changed Successfully" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
             }
         }
 

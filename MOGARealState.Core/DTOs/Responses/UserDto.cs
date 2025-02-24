@@ -14,5 +14,7 @@ namespace MOGARealState.Core.DTOs.Responses
         public string Token { get; set; } = default!;
 
         public string Role { get; set; }
+
+        public int? AgentId { get; set; } = null!;
     }
 }

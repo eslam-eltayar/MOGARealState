@@ -1,5 +1,8 @@
 ﻿
+using Azure.Core;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using MOGARealState.Core.Entities;
 using MOGARealState.Core.Enums;
 using MOGARealState.Core.Repositories;
@@ -11,11 +14,13 @@ namespace MOGARealState.Services
     public class PropertyService(
         IUnitOfWork unitOfWork,
         IFileUploadService fileUploadService,
-        IWebHostEnvironment webHostEnvironment) : IPropertyService
+        IWebHostEnvironment webHostEnvironment,
+        UserManager<AppUser> userManager) : IPropertyService
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IFileUploadService _fileUploadService = fileUploadService;
         private readonly IWebHostEnvironment _webHostEnvironment = webHostEnvironment;
+        private readonly UserManager<AppUser> _userManager = userManager;
 
         public async Task<PropertyResponse> AddPropertyAsync(AddPropertyRequest request, CancellationToken cancellationToken)
         {

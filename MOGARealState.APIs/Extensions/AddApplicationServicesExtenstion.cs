@@ -27,6 +27,7 @@ namespace MOGARealState.APIs.Extensions
             Services.AddScoped<IPropertyService, PropertyService>();
             Services.AddScoped<IFileUploadService, FileUploadService>();
             Services.AddScoped<IAgentService, AgentService>();
+            Services.AddScoped<IUserService, UserService>();
 
 
             return Services;
