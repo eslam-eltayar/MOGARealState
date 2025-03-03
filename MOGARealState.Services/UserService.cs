@@ -83,6 +83,27 @@ namespace MOGARealState.Services
             }).ToList().AsReadOnly();
         }
 
+        public async Task<UserDataResponse> GetUserDataAsync(string userId, CancellationToken cancellationToken)
+        {
+            var user = await _unitOfWork.Repository<AppUser>().FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
+
+            if (user == null)
+            {
+                throw new Exception("User not found.");
+            }
+
+            var userDataResponse = new UserDataResponse
+            {
+                UserId = user.Id,
+                UserName = user.UserName,
+                Email = user.Email,
+                City = user.City,
+                Phone = user.PhoneNumber
+            };
+
+            return userDataResponse;
+        }
+
         public async Task<bool> IsFavoritePropertyAsync(string userId, int properId, CancellationToken cancellationToken = default)
         {
             var favoriteProperty = await _unitOfWork.Repository<FavoriteUserProperties>()

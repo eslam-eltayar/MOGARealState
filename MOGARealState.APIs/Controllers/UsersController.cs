@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MOGARealState.Core.DTOs.Requests;
+using MOGARealState.Core.DTOs.Responses;
 using MOGARealState.Core.Services;
 
 namespace MOGARealState.APIs.Controllers
@@ -81,6 +82,22 @@ namespace MOGARealState.APIs.Controllers
                 var props = await _userService.OrderPropertyAsync(userId, propertyId, cancellationToken);
 
                 return Ok(new { Message = "Property Ordered Successfully" });
+            }
+            catch (Exception ex)
+            {
+
+                return NotFound(new { Message = ex.Message });
+            }
+        }
+
+        [HttpGet("UserData/{userId}")]
+        public async Task<ActionResult<UserDataResponse>> GetUserData(string userId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var data = await _userService.GetUserDataAsync(userId, cancellationToken);
+
+                return Ok(data);
             }
             catch (Exception ex)
             {

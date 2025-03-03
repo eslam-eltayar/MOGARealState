@@ -17,5 +17,7 @@ namespace MOGARealState.Core.Services
 
         Task<bool> OrderPropertyAsync(string userId, int properId, CancellationToken cancellationToken = default);
 
+        Task<UserDataResponse> GetUserDataAsync(string userId, CancellationToken cancellationToken);
+
     }
 }

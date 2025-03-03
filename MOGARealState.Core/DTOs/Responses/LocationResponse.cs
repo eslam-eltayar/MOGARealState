@@ -6,14 +6,8 @@ using System.Threading.Tasks;
 
 namespace MOGARealState.Core.DTOs.Responses
 {
-    public class AgentResponse
+    public class LocationResponse
     {
-        public int Id { get; set; }
         public string Name { get; set; }
-        public string Email { get; set; }
-        public string Phone { get; set; }
-
-        public string? ImageUrl { get; set; }
-
     }
 }

@@ -8,6 +8,7 @@ using MOGARealState.Core.Enums;
 using MOGARealState.Core.Repositories;
 using MOGARealState.Core.Services;
 using MOGARealState.Core.Specifications.PropertySpec;
+using System.Reflection.Metadata;
 
 namespace MOGARealState.Services
 {
@@ -165,11 +166,30 @@ namespace MOGARealState.Services
             }).ToList().AsReadOnly();
         }
 
-
-        public async Task<IReadOnlyList<AllPropertiesResponse>> GetPropertiesAsync(CancellationToken cancellationToken)
+        public async Task<IReadOnlyList<LocationResponse>> GetAllLocationsAsync(CancellationToken cancellationToken = default)
         {
-
             var properties = await _unitOfWork.Repository<Property>().GetAllAsync(cancellationToken);
+
+            if (properties == null || !properties.Any())
+            {
+                throw new Exception("No properties found");
+            }
+
+            var distinctLocations = properties
+                .Select(p => p.Location)
+                .Distinct()
+                .Select(location => new LocationResponse { Name = location })
+                .ToList()
+                .AsReadOnly();
+
+            return distinctLocations;
+        }
+
+        public async Task<IReadOnlyList<AllPropertiesResponse>> GetPropertiesAsync(PaginationDto paginationDto, CancellationToken cancellationToken)
+        {
+            var spec = new PropertyWithPaginationSpecification(paginationDto);
+
+            var properties = await _unitOfWork.Repository<Property>().GetAllWithSpecAsync(spec,cancellationToken);
 
             if (properties == null || !properties.Any())
             {
@@ -183,10 +203,23 @@ namespace MOGARealState.Services
                     HeadImage = p.HeadImage,
                     Id = p.Id,
                     Name = p.Name,
-                    Price = p.Price
+                    Price = p.Price,
+                    Size = p.Size,
+                    Type = p.Type.ToString(),
+                    Location = p.Location
 
                 }).ToList().AsReadOnly();
 
+
+        }
+
+        public async Task<int> GetPropertiesCountAsync(CancellationToken cancellationToken = default)
+        {
+            var spec = new PropertyWithPaginationSpecification();
+
+            var count = await _unitOfWork.Repository<Property>().GetCountAsync(spec,cancellationToken);
+
+            return count;
 
         }
 

@@ -1,5 +1,9 @@
 
+using Microsoft.AspNetCore.Identity;
 using MOGARealState.APIs.Extensions;
+using MOGARealState.Core.Entities;
+using MOGARealState.Repositories._Data;
+using MOGARealState.Repositories._Identity;
 
 namespace MOGARealState.APIs
 {
@@ -25,12 +29,39 @@ namespace MOGARealState.APIs
 
             var app = builder.Build();
 
-            // Ensure roles are created at startup
-            using (var scope = app.Services.CreateScope())
+
+            #region Apply All Pending Migrations [Update Database] and Data Seeding
+
+            // Create a single scope for all database initialization operations
+
+            using var scope = app.Services.CreateScope();
+            var services = scope.ServiceProvider;
+            var _dbContext = services.GetRequiredService<ApplicationDbContext>();
+            var loggerFactory = services.GetRequiredService<ILoggerFactory>();
+            var logger = loggerFactory.CreateLogger<Program>();
+
+            try
             {
-                var services = scope.ServiceProvider;
+                // Initialize roles first
+                var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
                 await InitializeRoles.InitializeRolesAsync(services);
+
+                // Then create and assign users
+                var userManager = services.GetRequiredService<UserManager<AppUser>>();
+                await ApplicationIdentityDbContextSeed.SeedUserAsync(userManager, roleManager);
             }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "An Error Has Been occurred during Seeding Data.");
+            }
+
+            #endregion
+
+            //using (var scope = app.Services.CreateScope())
+            //{
+            //    var services = scope.ServiceProvider;
+            //    await InitializeRoles.InitializeRolesAsync(services);
+            //}
 
             //if (app.Environment.IsDevelopment())
             //{

@@ -139,7 +139,8 @@ namespace MOGARealState.Services
                 Name = agent.Name,
                 Email = agent.Email,
                 Phone = agent.Phone,
-
+                ImageUrl = agent.ImageUrl,
+              
             }).ToList().AsReadOnly();
         }
 

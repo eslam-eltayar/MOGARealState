@@ -12,5 +12,9 @@ namespace MOGARealState.Core.DTOs.Requests
         public string Name { get; set; }
         public string HeadImage { get; set; }
         public decimal Price { get; set; }
+
+        public int Size { get; set; }
+        public string Type { get; set; }
+        public string Location { get; set; }
     }
 }
